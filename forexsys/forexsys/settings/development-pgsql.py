@@ -20,7 +20,8 @@ DATABASES = {
     }
 }
 
-TIME_ZONE = 'Asia/Shanghai'
+#TIME_ZONE = 'Asia/Shanghai'
+TIME_ZONE = 'UTC'
 LANGUAGE_CODE = 'en-us'
 
 SITE_ID = 1

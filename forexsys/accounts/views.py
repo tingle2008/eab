@@ -5,7 +5,7 @@ from django.contrib.auth import logout as account_logout
 from django.contrib.auth.models import User
 from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse
-from django.core.context_processors import csrf
+from django.template.context_processors import csrf
 from django.template import RequestContext
 from django.views.generic.edit import UpdateView
 from django import forms
