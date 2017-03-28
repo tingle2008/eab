@@ -1,0 +1,35 @@
+{% extends "tradesys/base.html" %}
+{% block menu %}
+    <b>我的计划</b>
+{% endblock %}
+{% block content %}
+
+
+<h1>新建交易計劃</h1>
+<form action="" method="POST" class="MyTradePlan">
+    {% csrf_token %}
+    {{ tradeinfo }}
+    <button id="create_plan" type="submit">创建/修改最新交易计划</button>
+</form>
+
+
+<h1>目前已有的交易</h1>
+<ol>
+    {% for tp in oldplans %}
+    <li>
+        <a href="/tradesys/MyTradePlan/market_over_view/{{ tp.id }}/">{{ tp.begin_time }} - {{ tp.tradetype }} - {{ tp.tradeframe }}</a>
+         | <a href="/tradesys/MyTradePlan/report_view/{{ tp.id }}/">Report</a>
+    </li>
+    {% endfor %}
+
+    {% if oldplans.has_previous %}
+    <a href="?page={{ oldplans.previous_page_number }}">上一页</a>
+    {% endif %}
+|
+    {% if oldplans.has_next %}
+    <a href="?page={{ oldplans.next_page_number }}">下一页</a>
+    {% endif %}
+</ol>
+
+
+{% endblock %}

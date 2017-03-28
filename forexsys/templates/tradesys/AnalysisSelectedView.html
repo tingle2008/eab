@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load tradesys_extras %}
+
+{% block menu %}
+    <a href="/tradesys/MyTradePlan">我的计划</a> &rarr;
+    <a href="/tradesys/MyTradePlan/market_over_view/">市场整体分析</a> &rarr;
+    <a href="/tradesys/MyTradePlan/market_diff_view/">各货币分化分析</a> &rarr;
+    <a href="/tradesys/MyTradePlan/first_select_view/">货币初选</a> &rarr;
+    <b>入选币种分析</b>
+{% endblock %}
+
+
+{% block content %}
+<li>{{ tradetype }} </li>
+<label>选定币种币分析:</label><b></b>
+
+
+<form action="" method="POST" class="AnalysisSelectedView">
+    {% csrf_token %}
+    
+    <table class="graph diffview">
+      <tr>
+      {% for item in selected_view %}
+      {% if forloop.counter0|divisibleby:5 %}
+	{% if forloop.counter0 != 0 %} <tr> {% endif %}	</tr><tr>
+      {% endif %}
+      {% if forloop.counter0|divisibleby:5 %}<th>{{ item.symbol_name.value }} 图表 </th>{% endif %}
+      <td class="thumb">
+	<a href="{{image_base_url}}full/{{item.symbol_name.value}}_{{timeframe_dict|hash:item.timeframe.value}}.gif" alt="diff_view">
+	  <img src="{{image_base_url}}thumb/{{item.symbol_name.value}}_{{timeframe_dict|hash:item.timeframe.value}}.gif" alt = "diff_view"/>
+	</a>
+	{{ item.id}}
+	{{ item.symbol_name.as_hidden}}
+	{{ item.timeframe.as_hidden }}
+	{{ item.obj_dir }}<br>{{ item.sub_dir }}
+      </td>
+      {% endfor %}
+      </tr>
+    </table>
+      {{ selected_view.management_form }}
+      <button id="selected" type="submit"> 交易计划制定 </button>
+      <input type="checkbox" name="planresult" value="N" /> 不做交易
+</form>
+
+{% endblock %}

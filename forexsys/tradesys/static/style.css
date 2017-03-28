@@ -1,0 +1,44 @@
+ .diff_view {
+  display:table;
+  /* border-collapse:separate; */
+  width:100%;
+ }
+ .diff_view_row {
+     display:table-row;
+ }
+
+ .diff_view_row div {
+     display:table-cell;
+ }
+
+ .diff_view_row div.diff_title {
+  width:5%;
+ }
+ .diff_view_row div.tf_mov {
+  width:19%;
+ }
+
+ .diff_view_row div.big {
+  width:15.833%;
+ }
+
+ .diff_view_row div.small {
+  width:15.833%;
+ }
+
+.diff_view_row div img {
+    display: block; width: 100%; height: auto;
+}
+
+
+form textarea {
+    width: 10em;
+    height: 1.3em;
+    margin: 0 0 0.5em;
+}
+
+form textarea.result_text {
+    width: 30em;
+    height: 10em;
+    margin: 0 0 0.5em;
+}

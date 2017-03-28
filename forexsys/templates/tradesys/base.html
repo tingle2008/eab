@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block head %}
+{% block tradesys_head %} {% endblock %}
+{% endblock %}
+{% block menu %}
+    <a href="/tradesys/MyTradePlan">我的计划</a> |
+    <a href="/tradesys/MyTradePlan/market_over_view/">市场整体分析</a> |
+    <a href="/tradesys/MyTradePlan/market_diff_view/">各货币分化分析</a> |
+    <a href="/tradesys/MyTradePlan/first_select_view/">货币初选</a> |
+    <a href="/tradesys/MyTradePlan/analysis_selected_view/">选定币种趋势分析</a> |
+    <a href="/tradesys/MyTradePlan/tradeplan_action_view/">行动计划制定</a> |
+    <a href="{% url accounts.views.profile %}">Profile</a>
+{% endblock %}
