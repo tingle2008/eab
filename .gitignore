@@ -1,0 +1,5 @@
+blog-static/reports/taskjuggler/
+*.pyc
+*.tjp
+*~
+*.db
