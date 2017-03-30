@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html class="no-js">
+    {% include "head.html" %}
+    <body>
+    {% include "header.html" %}
+    {% block content %}
+        <!-- block section 1 -->
+        {% block section_1 %}
+        {% endblock %}
+        <!-- section_1 end -->
+        
+        <!-- section 2 -->
+        {% block section_2 %}
+        {% endblock %}
+        <!-- section_2 end -->
+    {% endblock %}
+    {% include "footer.html" %}
+
+    </body>
+</html>

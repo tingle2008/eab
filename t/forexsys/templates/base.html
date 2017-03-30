@@ -1,0 +1,46 @@
+{% load i18n %}
+<!doctype html>
+<html>
+    <head>
+        <title>{% block page_title %} {% endblock %}</title>
+        <link rel="stylesheet" href="{{ STATIC_URL }}base.css" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}style.css" />
+        <script type="text/javascript" src="{{ STATIC_URL}}jquery-1.8.2.min.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL}}jquery.lightbox_me.jsmin.js"></script>
+        {% block head %} {% endblock %}
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="header">
+	            <div id="logo">
+                    Awesome Forex Trading
+	            </div>
+                <div id="toolbar">
+                    {% if user.username %}
+                        Welcome {{ user.username }} [ <a href="{% url accounts.views.logout %}">{% trans "sign out" %}</a> ]
+                    {% else %}
+                        <a href="{% url accounts.views.login %}">Sign In</a>
+                    {% endif %}
+                </div>
+                <div class="clear"></div>
+            </div>
+            <!-- end #header -->
+            <div id="menu">
+                {% block menu %}{% endblock %}
+            </div>
+            <!-- end #menu -->
+            <div id="main">
+	            <div id="content">
+                    {% block content %}{% endblock %}
+	            </div>
+            </div>
+            <div id="footer-wrapper">
+                <div id="footer">
+                    <p>&copy; LINUXNOTE 2012</p>
+                </div>
+            </div>
+        </div>
+        <div id="popup"></div>
+    </body>
+</html>

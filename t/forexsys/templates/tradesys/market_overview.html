@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<form action="" method="post" class="marketdirect">
+    {% csrf_token %}
+    <ol>
+    <li><label>货币名称:</label><b></b></li>
+    {{ form.as_ul }}
+    <li id="send">
+        <button type="submit">Update</button>
+    </li>
+    </ol>
+</form>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+{{ wizard.form.media }}
+{% endblock %}
+
+{% block content %}
+
+<section id='banner' class='wow fadeInUp'>
+     <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3 col-sm-6">
+                <div class="block">
+                    <p> Step {{ wizard.steps.step1 }} of {{wizard.steps.count }} </p>
+                    <form action="" method="post">{% csrf_token %}
+                        {{ wizard.management_form }}
+                        {% if wizard.form.forms %}
+                            {{ wizard.form.management_form }}
+                            {% for form in wizard.form.forms %}
+                                {{ form | crispy }}
+                            {% endfor %}
+                        {% else %}
+                            {{ wizard.form | crispy }}
+                        {% endif %}
+                        {% if wizard.steps.prev %}
+                        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">{% trans "first step" %}</button>
+                        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
+                        {% endif %}
+                        <input type="submit" value="{% trans "submit" %}"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>  
+</section>
+{% endblock %}

@@ -3,3 +3,4 @@ blog-static/reports/taskjuggler/
 *.tjp
 *~
 *.db
+*.sqlite3

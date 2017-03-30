@@ -1,0 +1,177 @@
+{% extends "tradesys/base.html" %}
+{% load tradesys_extras %}
+{% block tradesys_head %}
+<script type="text/javascript">
+var step = 1;
+var auto_scroll = 0;
+function start() {
+    step = 1;
+    auto_scroll = 1;
+    for (var s = 1; s < 5; s++)  {
+	$('#id_marketdetailinfo_set-' + s + '-obj_dir').val('N');
+        $('#id_marketdetailinfo_set-' + s + '-sub_dir').val('N');
+	$("#obj-selector-" + s + " li a").removeClass("selected");
+	$("#sub-selector-" + s + " li a").removeClass("selected");
+    }
+
+    next_step();
+}
+
+function next_step() {
+    if (step < 6) {
+	$('#step-' + step).lightbox_me({
+	    centered: true,
+	    onLoad: function() {
+		$('#step-' + (step - 1)).hide();
+		step = step + 1;
+	    }
+	});
+    } else {
+	step = 1;
+	$('.popup').trigger('close');
+    }
+}
+
+function abort_step() {
+    $('.popup').trigger('close');
+}
+
+function next_if_complete(s) {
+    var v1 = $('#id_marketdetailinfo_set-' + s + '-obj_dir').val();
+    var v2 = $('#id_marketdetailinfo_set-' + s + '-sub_dir').val();
+
+    if (auto_scroll == 0) return;
+
+    if (v1 != 'N' && v2 != 'N') {
+	next_step();
+    }
+}
+
+$(function() {
+
+    $('.obj-selector li a').click(function(e) {
+	var arg = $(this).attr('id').split('-');
+	$('#id_marketdetailinfo_set-' + (5 - arg[2]) + '-obj_dir').val(arg[3]);
+	$("#obj-selector-" + arg[2] + " li a").removeClass("selected");
+	$(this).addClass('selected');
+	next_if_complete(5 - arg[2]);
+	e.preventDefault();
+    });
+
+    $('.sub-selector li a').click(function(e) {
+	var arg = $(this).attr('id').split('-');
+	$('#id_marketdetailinfo_set-' + (5 - arg[2]) + '-sub_dir').val(arg[3]);
+	$("#sub-selector-" + arg[2] + " li a").removeClass("selected");
+	$(this).addClass('selected');
+	next_if_complete(5 - arg[2]);
+	e.preventDefault();
+    });
+
+
+    $('a.start-at-step').click(function(e) {
+	var arg = $(this).attr('id').split('-');
+	var id = arg[3];
+	step = id;
+	auto_scroll = 0;
+	next_step();
+    });
+});
+</script>
+{% endblock %}
+
+{% block menu %}
+    <a href="/tradesys/MyTradePlan">我的计划</a> &rarr;
+    <b>市场整体分析</b>
+{% endblock %}
+
+{% block content %}
+<form action="" method="POST" class="MarketOverView">
+    {% csrf_token %}
+    <h1>{{ tradetype }} &rarr; <a href="javascript:start();" class="next_step">开始</a>
+    </h1>
+    <table class="graph overview">
+        <tr>
+	        <th>图表</th>
+	        {% for form in movd_formset reversed %}
+            <td class="thumb">
+	            <a href="#" id="start-at-step-{{ forloop.counter }}" class="start-at-step">
+	                <img id="img-{{ forloop.counter }}" src="{{ image_base_url}}/thumb/USDX_{{timeframe_dict|hash:form.timeframe.value}}.gif" alt = "usdx"/>
+                </a>
+	        </td>
+	        {% endfor %}
+        </tr>
+
+        <tr>
+	        <th>级别</th>
+	        {% for form in movd_formset reversed %}
+	        <td>{{form.id}} {{form.timeframe.as_hidden}} {{ timeframe_dict|hash:form.timeframe.value }}</td>
+	        {% endfor %}
+        </tr>
+
+      <tr>
+	      <th>客观</th>
+	      {% for form in movd_formset reversed %}
+          <td>{{form.id}} {{ form.obj_dir }}</td>
+	      {% endfor %}
+      </tr>
+
+      <tr>
+	      <th>主观</th>
+	      {% for form in movd_formset reversed %}
+	      <td>{{form.id}} {{ form.sub_dir }}</td>
+	      {% endfor %}
+      </tr>
+
+      <tr>
+          <th><span class="required">结论</span></th>
+          <td colspan=6>
+              {{ mov_form.market_result }}
+          </td>
+      </tr>
+
+      <tr>
+          <th><span class="required">操作</span></th>
+          <td>{{ plan_res_result.plan_result }} {{ tradetype }}</td>
+      </tr>
+
+
+    </table>
+
+    <div class="diff_view">
+      {{ movd_formset.management_form }}
+    </div>
+
+    <button id="save_and_next" type="submit">下一步(各货币分化分析)</button>
+</form>
+<!-- 弹出菜单部分  -->
+<!-- TODO: 用 MODEL 数据替换写死的上下横 -->
+{% for form in movd_formset reversed %}
+<div id="step-{{ forloop.counter }}" class="stepview popup hidden">
+    <div>
+	    <img src="{{ image_base_url}}/full/USDX_{{timeframe_dict|hash:form.timeframe.value}}.gif" />
+    </div>
+    <div class="selector">
+        <h3>客观</h3>
+        <ul id="obj-selector-{{ forloop.counter }}" class="obj-selector">
+            <li><a href="#" id="obj-selector-{{ forloop.counter }}-U">上</a></li>
+            <li><a href="#" id="obj-selector-{{ forloop.counter }}-D">下</a></li>
+            <li><a href="#" id="obj-selector-{{ forloop.counter }}-Z">转</a></li>
+            <li><a href="#" id="obj-selector-{{ forloop.counter }}-H">横</a></li>
+        </ul>
+        <h3>主观</h3>
+        <ul id="sub-selector-{{ forloop.counter }}" class="sub-selector">
+            <li><a href="#" id="sub-selector-{{ forloop.counter }}-U">上</a></li>
+            <li><a href="#" id="sub-selector-{{ forloop.counter }}-D">下</a></li>
+            <li><a href="#" id="sub-selector-{{ forloop.counter }}-*">×</a></li>
+        </ul>
+        <div class="right">
+            <a href="javascript:next_step();" class="next_step">下一步</a>
+            <a href="javascript:abort_step();" class="abort_step">离开</a>
+        </div>
+        <div class="clear"></div>
+
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

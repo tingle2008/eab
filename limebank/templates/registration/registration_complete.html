@@ -1,0 +1,19 @@
+{% extends "registration/registration_base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% trans "Activation email sent" %}{% endblock %}
+
+{% block content %}
+<section id='banner' class='wow fadeInUp'>
+     <div class="container">
+        <div class="row">
+            <div class="col-md-7 col-md-offset-1 col-sm-7">
+                <div class="block">
+					<p>{% trans "Please check your email to complete the registration process." %}</p>
+                </div>
+            </div>
+        </div>
+    </div>  
+</section>
+{% endblock %}

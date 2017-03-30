@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load tradesys_extras %}
+
+{% block menu %}
+    <a href="/tradesys/MyTradePlan">我的计划</a> &rarr;
+    <a href="/tradesys/MyTradePlan/market_over_view/">市场整体分析</a> &rarr;
+    <a href="/tradesys/MyTradePlan/market_diff_view/">各货币分化分析</a> &rarr;
+    <b>货币初选</b>
+{% endblock %}
+
+
+{% block content %}
+<li>{{ tradetype }} </li>
+
+<form action="" method="POST" class="FirstSelectView">
+    {% csrf_token %}
+
+<table class="graph diffview">
+  <tr><td colspan=7><h2>長期</h2></td></tr>
+  <tr>
+    <th>图表 </th>
+    {% for item in b_diffview_set reversed %}
+    <td class="thumb">
+      <a href="{{image_base_url}}full/{{item.symbol_name}}_{{timeframe_dict|hash:item.timeframe}}.gif" alt="diff_view">
+	<img src="{{image_base_url}}thumb/{{item.symbol_name}}_{{timeframe_dict|hash:item.timeframe}}.gif" alt = "diff_view"/>
+      </a>
+    </td>
+    {% endfor %}
+  </tr>
+
+  <tr>
+    <th>客观</th>
+    {% for item in b_diffview_set reversed %}
+    <td> {{ obj_dir|hash:item.obj_dir }}</td>
+    {% endfor %}
+  </tr>
+
+  <tr>
+    <th>主观</th>
+    {% for item in b_diffview_set reversed %}
+    <td>{{ sub_dir|hash:item.sub_dir }} </td>
+    {% endfor %}
+  </tr>
+
+  <tr><th>結論</th><td colspan=6>{{ mov_b_res }}</td></tr>
+
+  <tr><td colspan=7><h2>短期</h2></td></tr>
+  
+  <tr>
+    <th>圖表</th>
+    {% for item in s_diffview_set reversed %}
+    <td class="thumb">
+      <a href="{{image_base_url}}full/{{item.symbol_name}}_{{timeframe_dict|hash:item.timeframe}}.gif" alt="diff_view">
+        <img src="{{image_base_url}}thumb/{{item.symbol_name}}_{{timeframe_dict|hash:item.timeframe}}.gif" alt = "diff_view"/>
+      </a>
+    </td>
+    {% endfor %}
+  </tr>
+
+  <tr>
+    <th>客观</th>
+    {% for item in s_diffview_set reversed %}
+    <td> {{ obj_dir|hash:item.obj_dir }} </td>
+    {% endfor %}
+  </tr>
+
+  <tr>
+    <th>主观</th>
+    {% for item in s_diffview_set reversed %}
+    <td> {{ sub_dir|hash:item.sub_dir }}</td>
+    {% endfor %}
+  </tr>
+
+  <tr>
+    <th>强弱</th>
+    {% for item in s_diffview_set reversed %}
+    <td> {{ item.strength }}</td>
+    {% endfor %}
+  </tr>
+
+  <tr>
+    <th>规范</th>
+    {% for item in s_diffview_set reversed %}
+    <td> {{ normative|hash:item.normative }}</td>
+    {% endfor %}
+  </tr>
+
+  <tr>
+    <th>結論</th>
+    <td colspan=6>
+      {{ mov_s_res }}
+    </td>
+  </tr>
+  <tr>
+    <th>过滤</th>
+    {% for form in first_select_view reversed %}
+    <td>{{form.id}} {{ form.exclude_reason }}</td>
+    {% endfor %}
+  </tr>
+</table>
+      {{ first_select_view.management_form }}
+        <button id="selected" type="submit">选定币种趋势分析</button>
+</form>
+{% endblock %}

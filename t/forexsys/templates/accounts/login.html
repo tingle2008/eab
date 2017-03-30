@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<form action="" method="post" class="login_form">
+    {% csrf_token %}
+    <ol>
+    {{ login_form.as_ul }}
+    <li id="send">
+        <button type="submit">Log In</button>
+    </li>
+    </ol>
+</form>
+{% endblock %}

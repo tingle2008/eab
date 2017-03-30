@@ -1,0 +1,277 @@
+{% extends "tradesys/base.html" %}
+{% load tradesys_extras %}
+{% block tradesys_head %}
+<script type="text/javascript">
+var step = Array();
+var auto_scroll = 0;
+function start(cls) {
+    step[cls] = 1;
+    auto_scroll = 1;
+    for (var s = 1; s < 6; s++)  {
+	$("#obj-selector-" + cls + '-' + s + " li a").removeClass("selected");
+	$("#sub-selector-" + cls + '-' + s + " li a").removeClass("selected");
+    }
+    for (var s = 0; s < 5; s++) {
+	$('#id_' + cls + '-' + s + '-obj_dir').val('N');
+        $('#id_' + cls + '-' + s + '-sub_dir').val('N');
+    }
+
+    next_step(cls);
+}
+
+function next_step(cls) {
+    if (step[cls] < 7) {
+	$('#step-' + cls + '-' + step[cls]).lightbox_me({
+	    centered: true,
+	    onLoad: function() {
+		$('#step-' + cls + '-' + (step[cls] - 1)).hide();
+		step[cls] = step[cls] + 1;
+	    }
+	});
+    } else {
+	step[cls] = 1;
+	$('.popup').trigger('close');
+    }
+}
+
+function abort_step() {
+    $('.popup').trigger('close');
+}
+
+function next_if_complete(cls, s) {
+    var v1 = $('#id_' + cls + '-' + s + '-obj_dir').val();
+    var v2 = $('#id_' + cls + '-' + s + '-sub_dir').val();
+
+
+    if (auto_scroll == 0) return;
+
+    if (v1 != 'N' && v2 != 'N') {
+	next_step(cls);
+    }
+}
+
+$(function() {
+
+    $('.obj-selector li a').click(function(e) {
+	var arg = $(this).attr('id').split('-');
+	var cls = arg[2];
+	var id = arg[3];
+	var val = arg[4];
+	var seq = id - 1;
+	$('#id_' + cls + '-' + seq + '-obj_dir').val(val);
+	$("#obj-selector-" + id + " li a").removeClass("selected");
+	$(this).addClass('selected');
+	next_if_complete(cls, seq);
+	e.preventDefault();
+    });
+
+    $('.sub-selector li a').click(function(e) {
+	var arg = $(this).attr('id').split('-');
+	var cls = arg[2];
+	var id = arg[3];
+	var val = arg[4];
+	var seq = id - 1;
+	$('#id_' + cls + '-' + seq + '-sub_dir').val(val);
+	$("#sub-selector-" + id + " li a").removeClass("selected");
+	$(this).addClass('selected');
+	next_if_complete(cls, seq);
+	e.preventDefault();
+    });
+
+
+    $('a.start-at-step').click(function(e) {
+	var arg = $(this).attr('id').split('-');
+	var cls = arg[3];
+	var id = arg[4];
+	step[cls] = id;
+	auto_scroll = 0;
+	next_step(cls);
+    });
+});
+</script>
+{% endblock %}
+
+{% block menu %}
+    <a href="/tradesys/MyTradePlan">我的计划</a> &rarr;
+    <a href="/tradesys/MyTradePlan/market_over_view/">市场整体分析</a> &rarr;
+    <b>各货币分化分析</b>
+{% endblock %}
+
+
+{% block content %}
+
+<form action="" method="POST" class="MarketDiffView">
+    {% csrf_token %}
+
+    <h1>{{ tradetype }}</h1>
+
+    <table class="graph diffview">
+        <tr>
+            <td colspan=7>
+                <h2>長期 &rarr; <a href="javascript:start('b');">開始</a></h2>
+            </td>
+        </tr>
+        <tr>
+	        <th>图表 </th>
+	        {% for form in b_diffview  %}
+            <td class="thumb">
+	            <a href="#" class="start-at-step" id="start-at-step-b-{{ forloop.counter}}">
+	                <img src="{{image_base_url}}thumb/{{form.symbol_name.value}}_{{timeframe_dict|hash:form.timeframe.value}}.gif" alt = "diff_view"/>
+                </a>
+	        </td>
+	        {% endfor %}
+        </tr>
+
+        <tr>
+	        <th>客观</th>
+	        {% for form in b_diffview %}
+            <td>{{form.id}} {{ form.obj_dir }}</td>
+	        {% endfor %}
+        </tr>
+
+        <tr>
+	        <th>主观</th>
+	        {% for form in b_diffview %}
+            <td>{{form.id}} {{ form.sub_dir }}</td>
+	        {% endfor %}
+        </tr>
+
+        <tr><th>結論</th><td colspan=6>{{ mov_b_form.id }} {{ mov_b_form.market_result }}</td></tr>
+        <tr>
+            <td colspan=7>
+            <h2>短期 &rarr; <a href="javascript:start('s');">開始</a></h2>
+            </td>
+        </tr>
+        <tr>
+            <th>圖表</th>
+            {% for form in s_diffview %}
+            <td class="thumb">
+	            <a href="#" class="start-at-step" id="start-at-step-s-{{ forloop.counter}}">
+                    <img src="{{image_base_url}}thumb/{{form.symbol_name.value}}_{{timeframe_dict|hash:form.timeframe.value}}.gif" alt = "diff_view"/>
+                </a>
+            </td>
+            {% endfor %}
+        </tr>
+
+        <tr>
+	        <th>客观</th>
+            {% for form in s_diffview %}
+            <td>{{form.id}} {{ form.obj_dir }}</td>
+            {% endfor %}
+        </tr>
+
+        <tr>
+	        <th>主观</th>
+            {% for form in s_diffview %}
+            <td>{{form.id}} {{ form.sub_dir }}</td>
+            {% endfor %}
+        </tr>
+
+        <tr>
+	        <th>强弱</th>
+            {% for form in s_diffview %}
+            <td>{{form.id}} {{ form.strength }}</td>
+            {% endfor %}
+        </tr>
+
+        <tr>
+	        <th>规范</th>
+            {% for form in s_diffview %}
+            <td>{{form.id}} {{ form.normative }}</td>
+            {% endfor %}
+        </tr>
+
+        <tr>
+            <th>結論</th>
+            <td colspan=6>
+                {{ mov_s_form.id }} {{ mov_s_form.market_result }}
+            </td>
+
+        </tr>
+    </table>
+
+    {{ b_diffview.management_form }}
+
+    {% for form in b_diffview %}
+    {{ form.id }}
+    {{ form.symbol_name.as_hidden }}
+    {{ form.timeframe.as_hidden }}
+    {{ form.strength.as_hidden }}
+    {{ form.normative.as_hidden }}
+    {{ form.symbol_name.as_hidden }}
+    {% endfor %}
+
+
+    {{ s_diffview.management_form }}
+
+    {% for form in s_diffview %}
+    {{ form.id }}
+    {{ form.symbol_name.as_hidden }}
+    {{ form.timeframe.as_hidden }}
+    {{ form.symbol_name.as_hidden }}
+    {% endfor %}
+
+    <button id="save_and_next" type="submit">下一步(货币初选)</button>
+</form>
+
+<!-- 弹出菜单部分  -->
+<!-- TODO: 用 MODEL 数据替换写死的上下横 -->
+{% for form in b_diffview  %}
+<div id="step-b-{{ forloop.counter }}" class="stepview popup hidden cls-b">
+    <div>
+	    <img src="{{image_base_url}}full/{{form.symbol_name.value}}_{{timeframe_dict|hash:form.timeframe.value}}.gif" />
+    </div>
+    <div class="selector">
+        <h3>客观</h3>
+        <ul id="obj-selector-b-{{ forloop.counter }}" class="obj-selector">
+            <li><a href="#" id="obj-selector-b-{{ forloop.counter }}-U">上</a></li>
+            <li><a href="#" id="obj-selector-b-{{ forloop.counter }}-D">下</a></li>
+            <li><a href="#" id="obj-selector-b-{{ forloop.counter }}-Z">转</a></li>
+            <li><a href="#" id="obj-selector-b-{{ forloop.counter }}-H">横</a></li>
+        </ul>
+        <h3>主观</h3>
+        <ul id="sub-selector-b-{{ forloop.counter }}" class="sub-selector">
+            <li><a href="#" id="sub-selector-b-{{ forloop.counter }}-U">上</a></li>
+            <li><a href="#" id="sub-selector-b-{{ forloop.counter }}-D">下</a></li>
+            <li><a href="#" id="sub-selector-b-{{ forloop.counter }}-*">×</a></li>
+        </ul>
+        <div class="right">
+            <a href="javascript:next_step();" class="next_step">下一步</a>
+            <a href="javascript:abort_step();" class="abort_step">离开</a>
+        </div>
+        <div class="clear"></div>
+
+    </div>
+</div>
+{% endfor %}
+
+{% for form in s_diffview  %}
+<div id="step-s-{{ forloop.counter }}" class="stepview popup hidden cls-s">
+    <div>
+	    <img src="{{image_base_url}}full/{{form.symbol_name.value}}_{{timeframe_dict|hash:form.timeframe.value}}.gif" / >
+    </div>
+    <div class="selector">
+        <h3>客观</h3>
+        <ul id="obj-selector-s-{{ forloop.counter }}" class="obj-selector">
+            <li><a href="#" id="obj-selector-s-{{ forloop.counter }}-U">上</a></li>
+            <li><a href="#" id="obj-selector-s-{{ forloop.counter }}-D">下</a></li>
+            <li><a href="#" id="obj-selector-s-{{ forloop.counter }}-Z">转</a></li>
+            <li><a href="#" id="obj-selector-s-{{ forloop.counter }}-H">横</a></li>
+        </ul>
+        <h3>主观</h3>
+        <ul id="sub-selector-s-{{ forloop.counter }}" class="sub-selector">
+            <li><a href="#" id="sub-selector-s-{{ forloop.counter }}-U">上</a></li>
+            <li><a href="#" id="sub-selector-s-{{ forloop.counter }}-D">下</a></li>
+            <li><a href="#" id="sub-selector-s-{{ forloop.counter }}-*">×</a></li>
+        </ul>
+        <div class="right">
+            <a href="javascript:next_step();" class="next_step">下一步</a>
+            <a href="javascript:abort_step();" class="abort_step">离开</a>
+        </div>
+        <div class="clear"></div>
+
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}
