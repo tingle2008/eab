@@ -19,5 +19,3 @@ urlpatterns = [
     # url(r'^MyTradePlan/report_view/(?P<tp_id>\d+)/$', 'TradePlan.report_view'),
     #url(r'^static/(?P<path>.*)$', 'django.views.static.serve',  {'document_root': settings.STATIC_DOC_ROOT}),
 ]
-              
-
