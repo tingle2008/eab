@@ -27,8 +27,4 @@ class Borrow(models.Model):
     """
     user                = models.OneToOneField(User, unique=True)
     repay_date          = models.DateField()
-    
 
-        
-        
-  
