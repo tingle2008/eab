@@ -1,9 +1,4 @@
-import json
-from rest_framework.views import APIView
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import authentication, permissions
-from rest_framework.parsers import JSONParser
+import json,time
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -33,7 +28,6 @@ def save_to_temptable(sym,x):
             print "Error Json string"
 
 @csrf_exempt
-@api_view(['GET', 'POST'])
 def add_data_set(request):
     if request.method == "POST":
         print request.data
@@ -47,7 +41,13 @@ def add_data_set(request):
 @csrf_exempt
 def tt_insert(request,sym,dt,o,h,l,c,v):
     try:
-        t = TempTableModel(dt=dt,o=float(o),h=float(h),l=float(l),c=float(c),v=int(v),sym=sym)
+        t = TempTableModel(dt=time.strftime('%Y-%m-%d %H:%M', time.localtime(float(dt))),
+                           o = "%.5f" % float(o),
+                           h = "%.5f" % float(h),
+                           l = "%.5f" % float(l),
+                           c = "%.5f" % float(c),
+                           v = "%d" % int(v),
+                           sym=sym)
         t.save()
     except IntegrityError as e:
         if 'unique constraint' in e.message:
@@ -61,5 +61,5 @@ def insert_success(request):
     return HttpResponse('ture')
 
 
-class TempTableView(CreateView):
-    return HttpResponse('ture')
+
+

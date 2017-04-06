@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'grappelli',
-    'rest_framework',
     'django.contrib.admindocs',
     'debug_toolbar',
     'django_tables2',
