@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 
-class TempTable(models.Model):
+class TempTableModel(models.Model):
     """
     """
     dt         = models.DateTimeField()
@@ -18,4 +18,8 @@ class TempTable(models.Model):
     l          = models.FloatField(max_length=5,blank=True,null=True)
     c          = models.FloatField(max_length=5,blank=True,null=True)
     v          = models.IntegerField()
+
+    class Meta:
+        unique_together = ('sym', 'dt',)
+
 

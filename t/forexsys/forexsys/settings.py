@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'grappelli',
+    'rest_framework',
     'django.contrib.admindocs',
     'debug_toolbar',
     'django_tables2',
@@ -131,7 +132,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

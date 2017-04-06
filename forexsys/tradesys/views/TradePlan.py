@@ -275,7 +275,7 @@ class MyTradePlanView(CreateView):
     def get_context_data(self, **kwargs):
         plan_list = self.model.objects.filter(created_by=self.request.user).order_by('-begin_time')
         paginator = Paginator(plan_list, 10)
-        
+
         page = self.request.GET.get('page')
         try:
             plans = paginator.page(page)
