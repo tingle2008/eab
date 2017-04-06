@@ -61,3 +61,5 @@ def insert_success(request):
     return HttpResponse('ture')
 
 
+class TempTableView(CreateView):
+    return HttpResponse('ture')

@@ -9,4 +9,3 @@ urlpatterns = [
     url(r'^new$',add_data_set),
     url(r'^add/ok$',insert_success),
 ]
-
