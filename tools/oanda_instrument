@@ -149,7 +149,7 @@ EOF
 [ "x$1" == 'xbonds' ] && echo $bonds && exit 0
 [ "x$1" == 'xmetals' ] && echo $metals && exit 0
 [ "x$1" == 'xindice' ] && echo $indice && exit 0
-[ "x$1" == 'xall' ] && echo $forex $bonds $commodities $metals $indice  && exit 0
+[ "x$1" == 'xall' ] && echo $forex $indice $commodities $bonds $metals   && exit 0
 
 
 echo "$0 <forex|commodities|bonds|metals|indice>"

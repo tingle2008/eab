@@ -22,7 +22,7 @@ class TempTableModel(models.Model):
         unique_together = ('sym', 'dt',)
 
 
-class EUR_USD(models.Model):
+class BaseMarket(models.Model):
     """
     """
     dt         = models.DateTimeField(null=False,unique=True)
@@ -35,5 +35,10 @@ class EUR_USD(models.Model):
     bid_l      = models.FloatField(max_length=10,blank=True,null=True)
     bid_c      = models.FloatField(max_length=10,blank=True,null=True)
     v          = models.IntegerField()
+
+    class Meta:
+        abstract = True
+
+
 
 

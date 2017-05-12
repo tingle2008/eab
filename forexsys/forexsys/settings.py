@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'accounts',
     'tradesys',
     'market',
+    'oanda',
 ]
 
 MIDDLEWARE = [
