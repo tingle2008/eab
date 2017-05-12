@@ -1,0 +1,40 @@
+#!/bin/sh
+
+
+
+sym=$1
+period=$2
+
+./list_forexdata_symbol |grep $sym || exit 0
+./period_list |grep -o $period || exit 0
+
+fromtbl="forexdata.forextester_${sym}_min_before_201704"
+totbl="forexdata.forextester_${sym}_${period}_before_201704"
+
+sql=$(cat <<EOF
+
+  with intervals as (
+  select start, start + interval '$period' as end
+  from generate_series('2001-01-07 00:00:00', '2017-03-31 20:00:00', interval '$period') as start
+  )
+  select distinct
+  intervals.start as dt,
+  min(low) over w as low,
+  max(high) over w as high,
+  first_value(open) over w as open,
+  last_value(close) over w as close,
+  sum(v) over w as volume
+  into $totbl 
+  from
+  intervals
+  join $fromtbl tmb on
+  tmb.dt >= intervals.start and
+  tmb.dt < intervals.end
+  window w as (partition by intervals.start)
+  order by intervals.start;
+
+EOF
+)
+
+
+psql -A -c "$sql"  

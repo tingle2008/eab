@@ -1,0 +1,34 @@
+#!/bin/sh
+
+cat <<EOF
+chfjpy
+eurcad
+eurchf
+eurgbp
+audusd
+eurjpy
+gbpchf
+gbpjpy
+nzdjpy
+nzdusd
+usdcad
+usdchf
+usdjpy
+xagusd
+xauusd
+audjpy
+gbpusd
+eurusd
+EOF
+
+exit 0;
+
+sql=$(cat <<EOF
+select tablename from pg_tables where schemaname = 'forexdata' and tablename like '%_min_before_201704';
+EOF
+)
+
+
+#forextester_nzdusd_min_before_201704
+psql -A -c "$sql"  |  grep -v tablename | grep -v 'rows)' | sed 's/forextester_//g' |sed 's/_min_before_201704//g'
+

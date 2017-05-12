@@ -1,0 +1,4 @@
+#!/bin/sh
+
+
+for i in `./period_list` ;do ./list_FreeForextester_symbol  |xargs -i echo  {} $i ;done

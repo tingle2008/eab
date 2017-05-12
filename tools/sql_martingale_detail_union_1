@@ -1,0 +1,24 @@
+#!/bin/sh
+
+sub_sql=`./sql_martingale_detail_union.py|sed 's/;//g'`
+
+
+
+
+sql=$(cat <<EOF
+
+with tmptable as (
+
+select sym,h->'n' as num,(h->'Time')::timestamp as t,h->'Profit' as profit,h->'Order' as order  from (
+  ${sub_sql}
+) as h )
+
+\n
+
+select sym,num,t,profit,order from tmptable ;
+
+EOF
+)
+
+
+echo $sql

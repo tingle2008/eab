@@ -1,0 +1,19 @@
+#!/bin/sh
+
+
+
+sym=$1
+period=$2
+
+./list_forexdata_symbol |grep $sym || exit 0
+./period_list |grep -o $period || exit 0
+
+
+sql=$(cat <<EOF
+set search_path to forexdata,public;
+alter table forexdata.forextester_${sym}_${period}_before_201704 add  column x hstore;
+EOF
+)
+
+
+psql -A -c "$sql"

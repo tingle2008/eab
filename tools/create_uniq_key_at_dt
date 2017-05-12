@@ -1,0 +1,19 @@
+#!/bin/sh
+
+
+
+sym=$1
+period=$2
+
+./list_forexdata_symbol |grep $sym || exit 0
+./period_list |grep -o $period || exit 0
+
+totbl="forexdata.forextester_${sym}_${period}_before_201704"
+
+sql=$(cat <<EOF
+create unique index ON ${totbl}(dt)
+EOF
+)
+
+
+psql -A -c "$sql"  

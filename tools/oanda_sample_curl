@@ -1,0 +1,4 @@
+#!/bin/sh
+
+
+curl -H \"Authorization: Bearer $key\" $*

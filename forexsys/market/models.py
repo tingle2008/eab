@@ -22,3 +22,18 @@ class TempTableModel(models.Model):
         unique_together = ('sym', 'dt',)
 
 
+class EUR_USD(models.Model):
+    """
+    """
+    dt         = models.DateTimeField(null=False,unique=True)
+    ask_o      = models.FloatField(max_length=10,blank=True,null=True)
+    ask_h      = models.FloatField(max_length=10,blank=True,null=True)
+    ask_l      = models.FloatField(max_length=10,blank=True,null=True)
+    ask_c      = models.FloatField(max_length=10,blank=True,null=True)
+    bid_o      = models.FloatField(max_length=10,blank=True,null=True)
+    bid_h      = models.FloatField(max_length=10,blank=True,null=True)
+    bid_l      = models.FloatField(max_length=10,blank=True,null=True)
+    bid_c      = models.FloatField(max_length=10,blank=True,null=True)
+    v          = models.IntegerField()
+
+

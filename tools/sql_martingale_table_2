@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# 列出所有交易记录中 detail 表格里的内容。
+# id = 1 的为summary 表格
+# id = 2 的为summary->parameter 表格。
+
+./sql_martingale_union.py '!=1 and id !=2'  |psql -f -
