@@ -135,7 +135,7 @@ def main(argv):
 
         print 'f_sec,m_sec is [%s]:[%s]' % (f_sec,m_sec)
         if (m_sec - f_sec) <= 60:
-            print 'max:fromTime diff less than 60'
+            print 'MaxTime:fromTime diff less than 1 minus'
             break
 
         kwargs["fromTime"] = mdt

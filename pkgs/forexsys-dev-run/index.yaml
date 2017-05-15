@@ -1,0 +1,5 @@
+default:
+  name: forexsys-dev-run
+  summary: "forexsys development running"
+  version: '1.0'
+

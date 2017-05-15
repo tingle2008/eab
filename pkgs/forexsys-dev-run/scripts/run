@@ -1,0 +1,11 @@
+#!/bin/sh
+
+
+echo "trying launch them..."
+sleep 1
+source /home/tingle/eabot/bin/activate
+cd /home/tingle/git/eab/forexsys
+
+exec 2>&1
+/home/tingle/eabot/bin/uwsgi --http :8000 --module forexsys.wsgi
+

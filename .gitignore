@@ -4,3 +4,4 @@ blog-static/reports/taskjuggler/
 *~
 *.db
 *.sqlite3
+*.deb
