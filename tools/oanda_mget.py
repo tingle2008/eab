@@ -1,7 +1,12 @@
 #!/usr/bin/env python
 
 from __future__ import unicode_literals
-import sys,os,getopt,re,time
+import sys
+sys.path.append("/home/tingle/git/eab/forexsys")
+sys.path.append("/home/tingle/git/eab/tools")
+
+import os,getopt,re,time
+import datetime
 import pytz
 import django
 from django.conf import settings
@@ -9,16 +14,18 @@ from django.db import models
 from django.utils.dateparse import parse_datetime
 from django.db.models import Avg, Max, Min, Sum
 
-sys.path.append("/home/tingle/git/eab/forexsys")
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "forexsys.settings")
 django.setup()
 
-from oanda.models import OANDA_INSTRUMNT,EUR_USD_M1
+#from oanda.models import OANDA_INSTRUMNT,USD_JPY_M1
+from oanda.models import *
+from django.apps import apps
 
 import argparse
 import common.config
 import common.args
-import datetime
+
 
 class CandlePrinter(object):
     def __init__(self):
@@ -53,7 +60,8 @@ class CandlePrinter(object):
             "=" * self.width['volume']
         ))
 
-    def print_candle(self, candle):
+
+    def indb_candle(self, candle,inst_str):
         try:
             time = str(
                 datetime.strptime(
@@ -66,47 +74,15 @@ class CandlePrinter(object):
 
         volume = candle.volume
 
-        for price in ["mid", "bid", "ask"]:
-            c = getattr(candle, price, None)
-
-            if c is None:
-                continue
-
-            print("{:>{width[time]}} {:>{width[type]}} {:>{width[price]}} {:>{width[price]}} {:>{width[price]}} {:>{width[price]}} {:>{width[volume]}}".format(
-                time,
-                price,
-                c.o,
-                c.h,
-                c.l,
-                c.c,
-                volume,
-                width=self.width
-            ))
-
-            volume = ""
-            time = ""
-
-
-    def indb_candle(self, candle):
-        try:
-            time = str(
-                datetime.strptime(
-                    candle.time,
-                    "%Y-%m-%dT%H:%M:%S.000000000Z"
-                )
-            )
-        except:
-            time = candle.time.split(".")[0]
-
-        volume = candle.volume
+        inst_model_name = '%s_M1' % inst_str
+        inst_model = apps.get_model( 'oanda' , inst_model_name )
 
         b = getattr(candle,'bid',None)
         a = getattr(candle,'ask',None)
 
-
         naive_time = parse_datetime(time)
 
-        p = EUR_USD_M1(dt=pytz.timezone("Zulu").localize(naive_time, is_dst=None),
+        p = inst_model(dt=pytz.timezone("Zulu").localize(naive_time, is_dst=None),
                        ask_o=a.o,
                        ask_h=a.h,
                        ask_l=a.l,
@@ -124,35 +100,42 @@ class CandlePrinter(object):
         p = ""
 
 
-def get_latest_dt():
+def get_latest_dt( inst_str ):
 
-    if EUR_USD_M1.objects.all().aggregate(Max('dt'))['dt__max']:
-        mdt = EUR_USD_M1.objects.all().aggregate(Max('dt'))['dt__max'] + datetime.timedelta(minutes=1) 
+    inst_model_name = '%s_M1' % inst_str
+    inst_model = apps.get_model( 'oanda' , inst_model_name )
+    maxdt = '2005-01-01T01:00:00.000000000Z'
+
+    if inst_model.objects.all().aggregate(Max('dt'))['dt__max']:
+        mdt = inst_model.objects.all().aggregate(Max('dt'))['dt__max'] + datetime.timedelta(minutes=1) 
         maxdt = mdt.strftime('%Y-%m-%dT%H:%M:%S.000000000Z')
-        
-    else:
-        maxdt = '2005-01-01T01:00:00.000000000Z'
-        
+
     return maxdt
 
+def main(argv):
 
-def main():
-
-    kwargs = {}
-    kwargs["granularity"] = 'M1'
-    kwargs["price"] = 'AB'
-    kwargs["smooth"] = False
-    instrument = 'EUR_USD'
-    kwargs["fromTime"] = ''
+    kwargs = {"granularity":'M1' , "price":'AB' , "smooth":False , "fromTime":'2005-01-01T01:00:00.000000000Z' }
     parser = argparse.ArgumentParser()
     common.config.add_argument(parser)
+
+    parser.add_argument(
+        "instrument",
+        type=common.args.instrument,
+        help="The instrument to get candles for"
+    )
+
     args = parser.parse_args()
+    instrument = args.instrument
     api = args.config.create_context()
 
-
     while True:
-        mdt = get_latest_dt()
-        if kwargs["fromTime"] == mdt:
+        mdt = get_latest_dt( instrument )
+        f_sec = time.mktime(datetime.datetime.strptime(kwargs["fromTime"],"%Y-%m-%dT%H:%M:%S.000000000Z").timetuple())
+        m_sec = time.mktime(datetime.datetime.strptime(mdt,"%Y-%m-%dT%H:%M:%S.000000000Z").timetuple())
+
+        print 'f_sec,m_sec is [%s]:[%s]' % (f_sec,m_sec)
+        if (m_sec - f_sec) <= 60:
+            print 'max:fromTime diff less than 60'
             break
 
         kwargs["fromTime"] = mdt
@@ -167,18 +150,13 @@ def main():
             return
 
         printer = CandlePrinter()
-
-        printer.print_header()
-
+        #printer.print_header()
         candles = response.get("candles", 200)
 
         for candle in response.get("candles", 200):
-            printer.indb_candle(candle)
-
-    #api.datetime_to_str(args.from_time)
-    #print me(EUR_USD_M1.objects.all().aggregate(Max('dt')))
+            printer.indb_candle(candle,instrument)
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])
 
 
