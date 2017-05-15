@@ -1,0 +1,14 @@
+#!/bin/bash
+
+
+echo "trying launch oanda mget..."
+sleep 1
+
+source /home/tingle/eabot/bin/activate
+cd /home/tingle/git/eab/tools/
+
+for i in `./oanda_instrument all` 
+do 
+    ./oanda_mget.py $i
+done
+

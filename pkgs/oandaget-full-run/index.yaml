@@ -1,0 +1,5 @@
+default:
+  name: oandaget-full-run
+  summary: "oanda get full instrument running"
+  version: '1.0'
+

@@ -104,17 +104,18 @@ def get_latest_dt( inst_str ):
 
     inst_model_name = '%s_M1' % inst_str
     inst_model = apps.get_model( 'oanda' , inst_model_name )
-    maxdt = '2005-01-01T01:00:00.000000000Z'
 
     if inst_model.objects.all().aggregate(Max('dt'))['dt__max']:
         mdt = inst_model.objects.all().aggregate(Max('dt'))['dt__max'] + datetime.timedelta(minutes=1) 
         maxdt = mdt.strftime('%Y-%m-%dT%H:%M:%S.000000000Z')
+    else:
+        maxdt = '2005-01-01T01:00:00.000000000Z'
 
     return maxdt
 
 def main(argv):
 
-    kwargs = {"granularity":'M1' , "price":'AB' , "smooth":False , "fromTime":'2005-01-01T01:00:00.000000000Z' }
+    kwargs = {"granularity":'M1' , "price":'AB' , "smooth":False , "fromTime":'2005-01-01T00:55:00.000000000Z' }
     parser = argparse.ArgumentParser()
     common.config.add_argument(parser)
 
@@ -133,7 +134,7 @@ def main(argv):
         f_sec = time.mktime(datetime.datetime.strptime(kwargs["fromTime"],"%Y-%m-%dT%H:%M:%S.000000000Z").timetuple())
         m_sec = time.mktime(datetime.datetime.strptime(mdt,"%Y-%m-%dT%H:%M:%S.000000000Z").timetuple())
 
-        print 'f_sec,m_sec is [%s]:[%s]' % (f_sec,m_sec)
+        print 'f_sec,m_sec,model are [%s]:[%s]:[%s](w/ %f sec)' % (f_sec,m_sec,instrument,(m_sec - f_sec)/60)
         if (m_sec - f_sec) <= 60:
             print 'MaxTime:fromTime diff less than 1 minus'
             break
