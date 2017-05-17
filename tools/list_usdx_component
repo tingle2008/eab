@@ -1,0 +1,11 @@
+#!/bin/sh
+
+#usdx constant:50.14348112
+cat <<EOF
+eur_usd:-0.576
+usd_jpy:0.136
+gbp_usd:-0.119
+usd_cad:0.091
+usd_sek:0.042
+usd_chf:0.036
+EOF
