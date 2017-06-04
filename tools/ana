@@ -1,0 +1,53 @@
+#!/home/tingle/anaconda2/bin/python
+
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+from sqlalchemy import create_engine 
+
+
+instrument = 'EUR_USD'
+fromDate = '2005-01-01 00:00:00'
+#fromDate = '2017-01-01 00:00:00'
+toDate = '2017-05-29 00:00:00'
+period = '15min'
+fromtbl = 'oanda_%s_m1' % (instrument)
+
+
+win_agg_group_sql = '''
+  with intervals as (
+  select start, start + interval '%s' as end
+  from generate_series('%s', '%s', interval '%s') as start
+  )
+  select distinct
+  intervals.start as dt,
+  min(ask_l) over w as ask_low,
+  max(ask_h) over w as ask_high,
+  first_value(ask_o) over w as ask_open,
+  last_value(ask_c) over w as ask_close,
+  min(bid_l) over w as bid_low,
+  max(bid_h) over w as bid_high,
+  first_value(bid_o) over w as bid_open,
+  last_value(bid_c) over w as bid_close,
+  sum(v) over w as volume
+  from
+  intervals
+  join %s tmb on
+  tmb.dt >= intervals.start and
+  tmb.dt < intervals.end
+  window w as (partition by intervals.start)
+  order by intervals.start;
+''' % (period,fromDate,toDate,period,fromtbl)
+
+engine = create_engine('postgresql://postgres@localhost:5432/postgres')
+df = pd.read_sql_query(win_agg_group_sql, 
+                       con=engine)
+import matplotlib.dates as mdates
+#pd.to_datetime(df.dt)
+#df.dt = pd.to_datetime(df.dt)
+#df = df[['dt', 'ask_open', 'ask_high', 'ask_low', 'ask_close', 'volume']]
+df = df[['dt', 'ask_open', 'ask_high', 'ask_low', 'ask_close', 'bid_open','bid_high','bid_low','bid_close','volume']]
+#df["dt"] = df["dt"].apply(mdates.date2num)
+df.to_csv(path_or_buf='/tmp/eur_chf.csv',index=False)
+#mdates.date2num(df.dt)
+#df['dt'].map(mdates.date2num)

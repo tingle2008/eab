@@ -1,0 +1,36 @@
+#!/bin/bash
+
+
+
+trimmed=$1
+trimmed=${trimmed%% }
+trimmed=${trimmed## }
+
+inst=$trimmed
+
+./oanda_instrument all |grep -i -o $inst || exit 0
+
+[ ! -d /tmp/dbcopy ] && mkdir /tmp/dbcopy && chmod 777 /tmp/dbcopy
+
+copysql=$(cat <<EOF
+
+select * from gaoyangdb;
+copy (select id,dt,ask_o,ask_h,ask_l,ask_c,bid_o,bid_h,bid_l,bid_c,v  from v_get_new_${inst}) to '/tmp/dbcopy/${inst}_new.csv' with csv ;
+
+EOF
+)
+
+tosql=$(cat <<EOF
+\copy oanda_${inst}_m1 (id,dt,ask_o,ask_h,ask_l,ask_c,bid_o,bid_h,bid_l,bid_c,v) from '/tmp/dbcopy/${inst}_new.csv' with csv ;
+EOF
+)
+
+echo $tosql
+
+
+
+psql -A -c "$copysql"
+psql -h 125.208.20.140 -Uhifive hifive -c "$tosql"
+
+
+

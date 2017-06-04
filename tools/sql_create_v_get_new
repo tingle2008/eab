@@ -1,0 +1,21 @@
+#!/bin/sh
+
+
+inst=$1
+
+#select * from dblink_connect('myconn','dbname=hifive user=hifive  host=125.208.20.140 password=1Ve46scoS');
+
+./oanda_instrument all |grep -i -o $inst || exit 0
+
+sql=$(cat << EOF
+
+create view v_get_new_${inst} as
+with dt_remote as ( SELECT dt::timestamp without time zone  FROM dblink('myconn', 'select max(dt) AT TIME ZONE ''UTC'' from oanda_${inst}_m1') as aaa(dt timestamp)),
+ndt as (select dt at time zone 'UTC' from dt_remote)
+select oanda.* from  oanda_${inst}_m1 as oanda,ndt where oanda.dt > ndt.timezone order by oanda.dt;
+
+EOF
+)
+
+psql -c "$sql"
+

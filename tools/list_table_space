@@ -1,0 +1,9 @@
+#!/bin/sh
+
+sql=$(cat <<EOF
+SELECT spcname FROM pg_tablespace;
+EOF
+)
+
+
+psql -A -c "$sql"  | grep -v tablename | grep -v 'rows)'

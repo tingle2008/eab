@@ -1,0 +1,9 @@
+#!/bin/sh
+
+sql=$(cat <<EOF
+select * from pg_tables ;
+EOF
+)
+
+
+psql  -c "$sql"  

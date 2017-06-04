@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/home/tingle/eabot/bin/python
 
 from __future__ import unicode_literals
 import sys
@@ -20,6 +20,7 @@ django.setup()
 
 #from oanda.models import OANDA_INSTRUMNT,USD_JPY_M1
 from oanda.models import *
+from oanda.models import OANDA_NONUS
 from django.apps import apps
 
 import argparse
@@ -113,25 +114,21 @@ def get_latest_dt( inst_str ):
 
     return maxdt
 
-def main(argv):
+def main_get(argv):
 
     kwargs = {"granularity":'M1' , "price":'AB' , "smooth":False , "fromTime":'2005-01-01T00:55:00.000000000Z' }
     parser = argparse.ArgumentParser()
     common.config.add_argument(parser)
 
-    parser.add_argument(
-        "instrument",
-        type=common.args.instrument,
-        help="The instrument to get candles for"
-    )
-
     args = parser.parse_args()
+    args.instrument = argv
     instrument = args.instrument
     api = args.config.create_context()
 
+
     while True:
         mdt = get_latest_dt( instrument )
-        f_sec = time.mktime(datetime.datetime.strptime(kwargs["fromTime"],"%Y-%m-%dT%H:%M:%S.000000000Z").timetuple())
+        f_sec = time.mktime( datetime.datetime.strptime(kwargs["fromTime"],"%Y-%m-%dT%H:%M:%S.000000000Z").timetuple() )
         m_sec = time.mktime(datetime.datetime.strptime(mdt,"%Y-%m-%dT%H:%M:%S.000000000Z").timetuple())
 
         print 'f_sec,m_sec,model are [%s]:[%s]:[%s](w/ %f mins)' % (f_sec,m_sec,instrument,(m_sec - f_sec)/60)
@@ -157,7 +154,16 @@ def main(argv):
         for candle in response.get("candles", 200):
             printer.indb_candle(candle,instrument)
 
+
+def main():
+    #for k,v in OANDA_NONUS:
+    for k,v in OANDA_INSTRUMNT:
+        print k
+        main_get(k)
+    sys.exit(0)
+
+
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main()
 
 

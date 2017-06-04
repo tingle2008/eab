@@ -3,6 +3,16 @@ from __future__ import unicode_literals
 from django.db import models
 from market.models import BaseMarket
 
+OANDA_NONUS = (
+    (u'EUR_USD',u'EUR/USD'),
+    (u'GBP_USD',u'GBP/USD'),
+    (u'AUD_USD',u'AUD/USD'),
+    (u'USD_CAD',u'USD/CAD'),
+    (u'USD_CHF',u'USD/CHF'),
+    (u'USD_JPY',u'USD/JPY'),
+    (u'USD_SEK',u'USD/SEK'),
+)
+
 OANDA_INSTRUMNT = (
     (u'AUD_CAD',u'AUD/CAD'),
     (u'AUD_CHF',u'AUD/CHF'),
