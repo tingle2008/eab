@@ -4,7 +4,7 @@
 echo "trying launch oanda mget..."
 sleep 180
 
-source /home/tingle/eabot/bin/activate
+source /export/crawlspace/anaconda2/bin/activate
 cd /home/tingle/git/eab/tools/
 
 exec 2>&1
