@@ -2,11 +2,9 @@
 
 
 echo "trying launch oanda mget..."
-sleep 180
 
-source /export/crawlspace/anaconda2/bin/activate
-cd /home/tingle/git/eab/tools/
+#source /export/crawlspace/anaconda2/bin/activate
+#cd /home/tingle/git/eab/tools/
 
-exec 2>&1
-exec setuidgid tingle  ./oanda_mget_all.py
+exec setuidgid tingle /export/crawlspace/eab/tools/oanda_mget_all.py  2>&1
 
