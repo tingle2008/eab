@@ -1,7 +1,5 @@
 #!/usr/bin/env Rscript
 
-
-
 require("RPostgreSQL")
 require("xts")
 library(quantmod)
