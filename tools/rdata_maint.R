@@ -45,7 +45,7 @@ conn <- function() {
 xts_max_dt <- function(inst) {
 
   e<<-new.env()
-  e$xts_name = sprintf("oanda.%s.m1",tolower(inst))
+  e$xts_name = sprintf("oanda.%s.1minutes",tolower(inst))
 
   stopifnot(is.xts( get(e$xts_name) ))
   
@@ -59,10 +59,72 @@ pg_max_dt <- function(inst) {
   return(format(e$max_date[1,1],format='%Y-%m-%d %H:%M:%S %Z'))
 }
 
+
+load_inst_from <- function(inst,fromDt='2005-01-01 23:59:59 GMT',toDt,p='1min') {
+
+  if( ! p %in% c('1min','5min','15min','30min') ) {
+    return(FALSE)
+  }
+
+  local_inst_obj = sprintf("oanda.%s.%s",tolower(inst),p)
+
+  if( p == '1min') {
+    sql_str = sprintf("select dt,bid_o as open,
+                               bid_h as high,
+                               bid_l as low,
+                               bid_c as close from oanda_%s_m1
+                               where dt > '%s'::timestamp with time zone order by dt",tolower(inst),fromDt)
+  } else {
+    sql_str = sprintf("with intervals as (
+                      select start, start + interval '%s' as end
+                      from generate_series('%s', '%s', interval '%s' ) as start
+                      )
+                      select distinct
+                      intervals.start as dt,
+                      min(bid_l) over w as low,
+                      max(bid_h) over w as high,
+                      first_value(bid_o) over w as open,
+                      last_value(bid_c) over w as close,
+                      sum(v) over w as volume
+                      from
+                      intervals
+                      join oanda_%s_m1 tmb on
+                      tmb.dt >= intervals.start and
+                      tmb.dt < intervals.end
+                      window w as (partition by intervals.start)
+                      order by intervals.start; " , p,fromDt,toDt,p,inst)
+  }
+
+  cat("sql_str is:",sql_str)
+  inst_df <- dbGetQuery(conn(),sql_str)
+  head(inst_df)
+  assign(local_inst_obj,xts(as.matrix(inst_df[,-1]), order.by=inst_df[,1]),envir = .GlobalEnv)
+}
+
+load_inst_from("EUR_USD",from="2017-05-31 00:00:00 GMT",'15min')
+
+
+
+save.image()
+
+check_and_load <- function(inst) {
+  ##inst_name = sprintf("oanda.%s.m1",tolower(inst))
+  inst_name = sprintf("oanda.%s.m1",tolower(inst))
+  if(! exists(inst_name) ) {
+    cat(inst_name," doesnt exists\n")
+    return(FALSE)
+  }
+
+  return(TRUE)
+}
+
+check_and_load("EUR_USD")
+
 xts_max_dt("EUR_USD")
 pg_max_dt("EUR_USD")
 
-as.POSIXct(xts_max_dt(inst_xts)) - as.POSIXct(pg_max_dt("EUR_USD"))
+as.POSIXct(xts_max_dt("EUR_USD")) - as.POSIXct(pg_max_dt("EUR_USD"))
+
 
 stop("stop here")
 
