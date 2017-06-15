@@ -1,4 +1,4 @@
-#!/usr/bin/env Rscript
+#!/export/crawlspace/anaconda2/bin/Rscript
 
 
 require("RPostgreSQL")
@@ -45,10 +45,10 @@ conn <- function() {
 xts_max_dt <- function(inst) {
 
   e<<-new.env()
-  e$xts_name = sprintf("oanda.%s.1minutes",tolower(inst))
+  e$xts_name = sprintf("oanda.%s.1min",tolower(inst))
 
   stopifnot(is.xts( get(e$xts_name) ))
-  
+
   return(format(max(index(get(e$xts_name))),format='%Y-%m-%d %H:%M:%S %Z'))
 }
 
@@ -101,24 +101,11 @@ load_inst_from <- function(inst,fromDt='2005-01-01 23:59:59 GMT',toDt,p='1min') 
   assign(local_inst_obj,xts(as.matrix(inst_df[,-1]), order.by=inst_df[,1]),envir = .GlobalEnv)
 }
 
-load_inst_from("EUR_USD",from="2017-05-31 00:00:00 GMT",'15min')
+load_inst_from("EUR_USD",p='1min')
 
 
 
 save.image()
-
-check_and_load <- function(inst) {
-  ##inst_name = sprintf("oanda.%s.m1",tolower(inst))
-  inst_name = sprintf("oanda.%s.m1",tolower(inst))
-  if(! exists(inst_name) ) {
-    cat(inst_name," doesnt exists\n")
-    return(FALSE)
-  }
-
-  return(TRUE)
-}
-
-check_and_load("EUR_USD")
 
 xts_max_dt("EUR_USD")
 pg_max_dt("EUR_USD")

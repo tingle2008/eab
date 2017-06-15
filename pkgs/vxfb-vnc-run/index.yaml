@@ -1,0 +1,5 @@
+default:
+  name: vxfb-vnc-run
+  summary: "vxfb vnc run ."
+  version: '1.0'
+
