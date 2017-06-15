@@ -1,0 +1,11 @@
+#!/bin/bash
+
+
+echo "trying launch oanda mt4 again..."
+sleep 10
+
+cd /export/crawlspace/MT4/o1/
+
+exec 2>&1
+exec setuidgid yuting envdir /service/oanda-mt4-run/env wine ./terminal.exe 
+

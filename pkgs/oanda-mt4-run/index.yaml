@@ -1,0 +1,5 @@
+default:
+  name: oanda-mt4-run
+  summary: "oanda mt4 run"
+  version: '1.0'
+
