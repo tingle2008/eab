@@ -1,9 +1,9 @@
-#!/home/tingle/eabot/bin/python
+#!/export/crawlspace/anaconda2/bin/python
 
 from __future__ import unicode_literals
 import sys
-sys.path.append("/home/tingle/git/eab/forexsys")
-sys.path.append("/home/tingle/git/eab/tools")
+sys.path.append("/export/crawlspace/eab/forexsys")
+sys.path.append("/export/crawlspace/eab/tools")
 
 import os,getopt,re,time
 import datetime
@@ -155,11 +155,17 @@ def main_get(argv):
             printer.indb_candle(candle,instrument)
 
 
-def main():
+def all_main():
     #for k,v in OANDA_NONUS:
     for k,v in OANDA_INSTRUMNT:
         print k
         main_get(k)
+
+def main():
+    while True:
+        all_main()
+        time.sleep(180)
+
     sys.exit(0)
 
 
