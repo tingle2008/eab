@@ -1,0 +1,13 @@
+#!/bin/bash
+
+
+echo "trying launch fluxbox on DISPLAY 1:.."
+
+sleep 1
+
+HOME=/home/yuting
+
+export HOME
+
+exec 2>&1
+exec setuidgid yuting fluxbox -display :1
