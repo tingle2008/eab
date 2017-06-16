@@ -3,11 +3,15 @@
 
 echo "trying launch Xvfb vnc for DISPLAY 1:.."
 
-exec 2>&1
+HOME=/home/yuting
+DISPLAY=:1
+
+export HOME DISPLAY
+exec  2>&1
 exec setuidgid yuting x11vnc -create \
+			     -rfbauth /home/yuting/.vnc/passwd \
 			     -env FD_PROG=/usr/bin/fluxbox  \
 			     -env X11VNC_FINDDISPLAY_ALWAYS_FAILS=1  \
 			     -env X11VNC_CREATE_GEOM=${1:-800x600x16} \
 			     -gone 'killall Xvfb'   \
-			     -bg -nopw -loop100
-
+			     -usepw -loop100
