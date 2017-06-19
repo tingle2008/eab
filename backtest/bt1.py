@@ -6,7 +6,7 @@ from datetime import datetime
 
 
 # point mt4 install folder
-initizalize('/export/crawlspace/mt4-land/oanda-01')
+initizalize('/export/crawlspace/mt4-land/noor-01')
 
 
 from_date = datetime(2017, 6, 1)
@@ -19,9 +19,8 @@ param = {
          'Lots': {'value': 0.01}
          }
 
-backtest = BackTest(ea_name, param, 'EURUSD-2', 'M5', from_date, to_date,model=0)
-
+backtest = BackTest(ea_name, param, 'EURUSD', 'M5', from_date, to_date,model=0,test_visual=True)
 
 
 ret = backtest.run()
-print ret.gross_profit
+#print ret.gross_profit
