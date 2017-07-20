@@ -43,6 +43,7 @@ engine = create_engine('postgresql://postgres@localhost:5432/postgres')
 df = pd.read_sql_query(win_agg_group_sql, 
                        con=engine)
 import matplotlib.dates as mdates
+
 #pd.to_datetime(df.dt)
 #df.dt = pd.to_datetime(df.dt)
 #df = df[['dt', 'ask_open', 'ask_high', 'ask_low', 'ask_close', 'volume']]

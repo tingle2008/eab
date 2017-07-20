@@ -1,0 +1,9 @@
+default:
+  name: metatrader-fluxbox
+  summary: "headless fluxbox run ."
+  version: '1.0'
+
+deb:
+  require: 
+      - fluxbox
+

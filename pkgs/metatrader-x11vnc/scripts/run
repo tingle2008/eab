@@ -1,0 +1,14 @@
+#!/bin/bash
+
+
+echo "trying launch x11vnc on DISPLAY=2."
+
+sleep 2
+
+HOME=/home/metatrader
+
+export HOME
+
+exec 2>&1
+exec setuidgid metatrader x11vnc -display :2 -nopw -loop2000 -ncache 10
+

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+
+echo "vnc local map is running"
+
+HOME=/home/yuting
+export HOME
+
+exec setuidgid yuting ssh -F ~/.ssh/config -N -T -L 5900:localhost:5900 7888

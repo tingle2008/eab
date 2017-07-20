@@ -1,0 +1,9 @@
+default:
+  name: metatrader-vxfb
+  summary: "vxfb vnc run ."
+  version: '1.0'
+
+deb:
+  require: 
+      - xvfb
+

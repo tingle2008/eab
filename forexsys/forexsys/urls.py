@@ -23,4 +23,5 @@ urlpatterns = [
     url(r'^grappelli/',include('grappelli.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^market/', include('market.urls')),
+    url(r'^', include('cms.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

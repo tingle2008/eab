@@ -46,6 +46,11 @@ INSTALLED_APPS = [
     'tradesys',
     'market',
     'oanda',
+    'django.contrib.sites',
+    'cms',
+    'menus',
+    'treebeard',
+    'sekizai',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +62,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'cms.middleware.user.CurrentUserMiddleware',
+    'cms.middleware.page.CurrentPageMiddleware',
+    'cms.middleware.toolbar.ToolbarMiddleware',
+    'cms.middleware.language.LanguageCookieMiddleware',
 ]
 
 ROOT_URLCONF = 'forexsys.urls'
@@ -64,7 +74,7 @@ ROOT_URLCONF = 'forexsys.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -72,10 +82,37 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+		'sekizai.context_processors.sekizai',
+		'cms.context_processors.cms_settings',
             ],
         },
     },
 ]
+
+CMS_PLACEHOLDER_CONF = {
+	'content': {
+        'plugins': [ 'PicturePlugin'],
+        'text_only_plugins': ['LinkPlugin'],
+        'extra_context': {"width":640},
+        'name': 'content',
+        'language_fallback': True,
+        'default_plugins': [
+            {
+                'plugin_type': 'TextPlugin',
+                'values': {
+                    'body':'<p>Lorem ipsum dolor sit amet...</p>',
+                },
+            },
+        ],
+        'child_classes': {
+            'TextPlugin': ['PicturePlugin', 'LinkPlugin'],
+        },
+        'parent_classes': {
+            'LinkPlugin': ['TextPlugin'],
+        },
+    },
+	}
+
 
 WSGI_APPLICATION = 'forexsys.wsgi.application'
 
@@ -120,11 +157,21 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CMS_TEMPLATES = [
+    ('home.html', 'Home page template'),
+]
+
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
+
+LANGUAGES = [
+    ('en-us', 'English'),
+]
+
 
 TIME_ZONE = 'UTC'
 
@@ -133,6 +180,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+SITE_ID = 1
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/

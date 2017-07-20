@@ -1,0 +1,5 @@
+default:
+  name: vnc-local-map01
+  summary: "vnc local map #01 run ."
+  version: '1.0'
+

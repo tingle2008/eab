@@ -1,0 +1,9 @@
+default:
+  name: metatrader-x11vnc
+  summary: "metatrader headless x11vnc run ."
+  version: '1.0'
+
+deb:
+  require: 
+      - x11vnc
+
