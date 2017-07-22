@@ -1,5 +1,5 @@
 default:
-  name: headless-vxfb
+  name: headless-xvfb
   summary: "vxfb vnc run ."
   version: '1.0'
 
