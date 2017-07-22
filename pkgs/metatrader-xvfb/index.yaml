@@ -1,5 +1,5 @@
 default:
-  name: metatrader-vxfb
+  name: metatrader-xvfb
   summary: "vxfb vnc run ."
   version: '1.0'
 

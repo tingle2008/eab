@@ -82,15 +82,15 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-		'sekizai.context_processors.sekizai',
-		'cms.context_processors.cms_settings',
+                'sekizai.context_processors.sekizai',
+                'cms.context_processors.cms_settings',
             ],
         },
     },
 ]
 
 CMS_PLACEHOLDER_CONF = {
-	'content': {
+    'content': {
         'plugins': [ 'PicturePlugin'],
         'text_only_plugins': ['LinkPlugin'],
         'extra_context': {"width":640},
@@ -111,7 +111,7 @@ CMS_PLACEHOLDER_CONF = {
             'LinkPlugin': ['TextPlugin'],
         },
     },
-	}
+}
 
 
 WSGI_APPLICATION = 'forexsys.wsgi.application'
