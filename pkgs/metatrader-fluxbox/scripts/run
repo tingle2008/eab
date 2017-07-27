@@ -3,11 +3,11 @@
 
 echo "trying launch fluxbox on DISPLAY=2.."
 
-sleep 1
+sleep 2
 
 HOME=/home/metatrader
 
 export HOME
 
 exec 2>&1
-exec setuidgid metatrader fluxbox -display :2
+exec setuidgid metatrader fluxbox -display :1

@@ -3,4 +3,4 @@
 
 echo "trying launch Xvfb on DISPLAY 2:.."
 
-exec setuidgid metatrader Xvfb :2
+exec setuidgid metatrader Xvfb :1
