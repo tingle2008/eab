@@ -1,9 +1,0 @@
-default:
-  name: headless-x11vnc
-  summary: "headless x11vnc run ."
-  version: '1.0'
-
-deb:
-  require: 
-      - x11vnc
-

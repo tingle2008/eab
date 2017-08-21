@@ -7,5 +7,5 @@ sleep 1
 cd /export/crawlspace/eab/forexsys
 
 exec 2>&1
-exec /export/crawlspace/anaconda2/bin/uwsgi -M --log-master --die-on-term  --http :8000 --module forexsys.wsgi
+exec /export/crawlspace/anaconda2/bin/uwsgi -M --log-master --die-on-term  --http :80 --module forexsys.wsgi
 

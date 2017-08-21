@@ -1,6 +1,0 @@
-#!/bin/bash
-
-
-echo "trying launch Xvfb on DISPLAY 1:.."
-
-exec setuidgid yuting Xvfb :1

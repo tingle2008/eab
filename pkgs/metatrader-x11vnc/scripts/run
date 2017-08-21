@@ -10,4 +10,4 @@ HOME=/home/metatrader
 export HOME
 
 exec 2>&1
-exec setuidgid metatrader x11vnc -display :1 -nopw -loop2000
+exec setuidgid metatrader x11vnc -shared -forever -localhost -display :1 -nopw -loop2000
