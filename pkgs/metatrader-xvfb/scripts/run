@@ -1,6 +1,6 @@
 #!/bin/bash
 
 
-echo "trying launch Xvfb on DISPLAY 2:.."
+echo "trying launch Xvfb on DISPLAY 1:.."
 
-exec setuidgid metatrader Xvfb :1
+exec setuidgid metatrader Xvfb :1 -ac -screen 0 800x600x24+32
